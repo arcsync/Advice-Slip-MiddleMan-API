@@ -1,0 +1,31 @@
+﻿@page
+@model Advice_Slip_MiddleMan_API.Pages.IndexModel
+@{
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HTML API FRONT</title>
+</head>
+<body>
+    <h1>Your advice for today:</h1>
+    <p id="Padvice" />
+    <br />
+    <script type="text/javascript">
+        const ApiAdviceConnectionString = "https://localhost:5001/api";
+        async function initializeParagraphAdvice(connStr)
+        {
+            let response = await fetch(connStr);
+            let json = await response.json();
+            let advice = JSON.stringify(json.value.advice);
+            adviceParagraph.textContent = advice;
+        }
+        
+        var adviceParagraph = document.getElementById("Padvice");
+        initializeParagraphAdvice(ApiAdviceConnectionString);
+    </script>   
+
+</body>
+</html>

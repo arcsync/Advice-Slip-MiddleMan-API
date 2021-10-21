@@ -25,6 +25,7 @@ namespace Advice_Slip_MiddleMan_API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRazorPages();
             services.AddControllers();
         }
 
@@ -44,6 +45,7 @@ namespace Advice_Slip_MiddleMan_API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }

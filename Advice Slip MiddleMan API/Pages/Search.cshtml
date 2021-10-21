@@ -1,0 +1,57 @@
+﻿@page
+@model Advice_Slip_MiddleMan_API.Pages.SearchModel
+@{
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HTML API FRONT: SEARCH</title>
+</head>
+<body>
+
+    <h1>Search</h1>
+    
+    <input id="TEXTsearchQueryString" type="text" />
+    <button id="BUTTONsearch" onclick="initializeParagraphSearchResults(connStr)">Search</button>
+    <p id="p1"/>
+    <script type="text/javascript">
+        var searchParagraph = document.getElementById("p1");
+        var connStr = "https://localhost:5001/api";
+        async function initializeParagraphSearchResults(connStr) {
+            
+            let searchQuery = document.getElementById("TEXTsearchQueryString").value;            
+            let ApiSearchConnectionString = connStr + "/search/" + searchQuery;
+            let response = await fetch(ApiSearchConnectionString);
+            let json = await response.json();           
+
+            searchParagraph.innerHTML = "Results: " + JSON.stringify(json.value.total_results);
+
+            document.getElementById("p2").innerHTML = "Query: " + JSON.stringify(json.value.query);
+
+            document.getElementById("p3").innerHTML = "Advice slips mactching your query: ";
+
+            var slipsArray = json.value.slips;
+            for (var i = 0; i < slipsArray.length; i++) {
+                let slip = JSON.stringify(slipsArray[i].advice) + '\n';
+                let nextParagraph = document.createElement('p');
+                nextParagraph.innerHTML = slip;
+                document.body.appendChild(nextParagraph)
+            }
+            
+        }
+
+
+
+    </script>
+    <p id="p2" />
+    <p id="p3" />
+    <p id="p4" />
+    <p id="p5" />
+    <p id="p6" />
+    <p id="p7" />
+
+
+</body>
+</html>
