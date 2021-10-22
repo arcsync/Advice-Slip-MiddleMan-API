@@ -29,7 +29,7 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             try
             {
                 serializeable = JsonConvert.DeserializeObject<AdviceSlip>(response);
-                if ((serializeable as AdviceSlip).id == 0)
+                if ((serializeable as AdviceSlip).slip == null)
                 {
                     //Deserialize to Message if AdviceSlip is invalid
                     serializeable = JsonConvert.DeserializeObject<Message>(response);
@@ -44,7 +44,8 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             //string serialized = JsonConvert.SerializeObject(serializeable);
             //return Ok(serialized);
             //Depracated because JsonResult gives a more elegant output
-            JsonResult result = new JsonResult(serializeable);            
+            JsonResult result = new JsonResult(serializeable);
+            result = populateResultFields(result);
             return Ok(result);
         }
 
@@ -58,7 +59,7 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             try
             {
                 serializeable = JsonConvert.DeserializeObject<AdviceSlip>(response);
-                if ((serializeable as AdviceSlip).id == 0)
+                if ((serializeable as AdviceSlip).slip == null)
                 {
                     serializeable = JsonConvert.DeserializeObject<Message>(response);
                 }
@@ -71,6 +72,7 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             }
                  
             JsonResult result = new JsonResult(serializeable);
+            result = populateResultFields(result);
             return Ok(result);
         }
 
@@ -95,7 +97,15 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             }
             
             JsonResult result = new JsonResult(serializeable);
-            return Ok(result); ;
+            result = populateResultFields(result);
+            return Ok(result);
+        }
+
+        private JsonResult populateResultFields(JsonResult result)
+        {
+            result.ContentType = "application/json";
+            result.StatusCode = 200;
+            return result;
         }
     }
 }

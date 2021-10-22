@@ -13,7 +13,8 @@ namespace Advice_Slip_MiddleMan_API
         [JsonProperty("query")]
         public string query { get; set; }
         [JsonProperty("slips")]
-        public AdviceSlip[] slips { get; set; }
+        public Slip[] slips { get; set; }
+        //Note that Slip is not AdviceSlip
         
     }
 }

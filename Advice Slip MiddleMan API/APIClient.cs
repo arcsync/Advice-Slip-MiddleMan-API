@@ -27,8 +27,7 @@ namespace Advice_Slip_MiddleMan_API
         {
             string connectionString = AS_API_ADDRESS;
             string adviceSlip = getJSONFromForeignAPI<string>(APIAddress: connectionString);
-            string unpackedJSON = unpackJSON(adviceSlip);
-            string fixedJSON = fixJSON(unpackedJSON);
+            string fixedJSON = fixJSON(adviceSlip);
             return fixedJSON;
         }
 
@@ -37,8 +36,7 @@ namespace Advice_Slip_MiddleMan_API
         {
             string connectionString = $"{AS_API_ADDRESS}/{Id}";
             string adviceSlip = getJSONFromForeignAPI<string>(APIAddress: connectionString);
-            string unpackedJSON = unpackJSON(adviceSlip);
-            string fixedJSON = fixJSON(unpackedJSON);
+            string fixedJSON = fixJSON(adviceSlip);
             return fixedJSON;
         }
 
@@ -66,18 +64,7 @@ namespace Advice_Slip_MiddleMan_API
             }
         }
 
-        private static string unpackJSON(string rawJSON)
-        {
-            /*ADVICE SLIP JSON API returns JSONS
-             *encapsulated in a {rootobject} that
-             *is not comfortable for JSON.NET to handle
-             *this unpacks these JSONS by keeping only
-             *the innermost brakets.
-             */
-            int start = rawJSON.LastIndexOf("{");
-            int length = rawJSON.IndexOf("}") - start;
-            return rawJSON.Substring(start, length);
-        }
+        
 
         private static string fixJSON(string rawJSON)
         {
@@ -86,7 +73,7 @@ namespace Advice_Slip_MiddleMan_API
              * this is meant to be a quick hotfix for that
              * (eg. https://api.adviceslip.com/advice/1).
              */
-            if (!rawJSON.EndsWith("}"))
+            if (!rawJSON.EndsWith("}}"))
             {
                 rawJSON = rawJSON + "}";
             }
@@ -94,6 +81,23 @@ namespace Advice_Slip_MiddleMan_API
             return rawJSON;
         }
 
+        
+
+
+        /* LEGACY
+         * private static string unpackJSON(string rawJSON)
+        {
+             *ADVICE SLIP JSON API returns JSONS
+             *encapsulated in a {rootobject} that
+             *is not comfortable for JSON.NET to handle
+             *this unpacks these JSONS by keeping only
+             *the innermost brakets.
+             *
+            int start = rawJSON.LastIndexOf("{");
+            int length = rawJSON.IndexOf("}") - start;
+            return rawJSON.Substring(start, length);
+        }
+        */
         /*
          * LEGACY
         public static async Task<string> PullAdviceStripFromForeignAPI(string APIAddress)
