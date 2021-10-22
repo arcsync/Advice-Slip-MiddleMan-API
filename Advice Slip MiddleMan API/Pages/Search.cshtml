@@ -12,45 +12,58 @@
 <body>
 
     <h1>Search</h1>
-    
+
     <input id="TEXTsearchQueryString" type="text" />
     <button id="BUTTONsearch" onclick="initializeParagraphSearchResults(connStr)">Search</button>
-    <p id="p1"/>
+    <p id="p1" />
+    <p id="p2" />
+    <p id="p3" />
+    <div id="resultsList"/>
+    
     <script type="text/javascript">
-        var searchParagraph = document.getElementById("p1");
         var connStr = "https://localhost:5001/api";
         async function initializeParagraphSearchResults(connStr) {
-            
-            let searchQuery = document.getElementById("TEXTsearchQueryString").value;            
+                       
+            var resultsList = document.getElementById("resultsList");
+            resultsList.innerHTML = "";
+
+
+            let searchQuery = document.getElementById("TEXTsearchQueryString").value;
             let ApiSearchConnectionString = connStr + "/search/" + searchQuery;
             let response = await fetch(ApiSearchConnectionString);
-            let json = await response.json();           
+            let json = await response.json();
 
-            searchParagraph.innerHTML = "Results: " + JSON.stringify(json.value.total_results);
 
-            document.getElementById("p2").innerHTML = "Query: " + JSON.stringify(json.value.query);
+            if (JSON.stringify(json.value.total_results) != null) {
+                document.getElementById("p1").innerHTML = "Results: " + JSON.stringify(json.value.total_results);
 
-            document.getElementById("p3").innerHTML = "Advice slips mactching your query: ";
+                document.getElementById("p2").innerHTML = "Query: " + JSON.stringify(json.value.query);
 
-            var slipsArray = json.value.slips;
-            for (var i = 0; i < slipsArray.length; i++) {
-                let slip = JSON.stringify(slipsArray[i].advice) + '\n';
-                let nextParagraph = document.createElement('p');
-                nextParagraph.innerHTML = slip;
-                document.body.appendChild(nextParagraph)
+                document.getElementById("p3").innerHTML = "Advice slips matching your query: ";
+
+                var slipsArray = json.value.slips;
+                for (var i = 0; i < slipsArray.length; i++) {
+                    let slip = JSON.stringify(slipsArray[i].advice) + '\n';
+                    let nextParagraph = document.createElement('p');
+                    nextParagraph.innerHTML = slip;
+                    resultsList.appendChild(nextParagraph);
+                }
+            }
+            else {
+                document.getElementById("p1").innerHTML = JSON.stringify(json.value.message.type);
+                document.getElementById("p2").innerHTML = JSON.stringify(json.value.message.text);
+                document.getElementById("p3").innerHTML = "";
             }
             
         }
 
+        
+
 
 
     </script>
-    <p id="p2" />
-    <p id="p3" />
-    <p id="p4" />
-    <p id="p5" />
-    <p id="p6" />
-    <p id="p7" />
+
+
 
 
 </body>
