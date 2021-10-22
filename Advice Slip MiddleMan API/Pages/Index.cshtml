@@ -19,7 +19,7 @@
         {
             let response = await fetch(connStr);
             let json = await response.json();
-            let advice = JSON.stringify(json.value.advice);
+            let advice = JSON.stringify(json.value.slip.advice);
             adviceParagraph.textContent = advice;
         }
         
