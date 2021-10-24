@@ -7,17 +7,17 @@ using System.Text.Json;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace Advice_Slip_MiddleMan_API
 {
-    public class APIClient
+    public static class APIClient
     {
-
         private const string AS_API_ADDRESS = "https://api.adviceslip.com/advice";
 
         public static HttpClient httpClient{ get; set; }
         public static void CreateHttpClient()
-        {
+        {            
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));

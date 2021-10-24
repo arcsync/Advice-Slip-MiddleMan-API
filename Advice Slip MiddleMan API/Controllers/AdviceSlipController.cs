@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+//TODO: Reduce boilerpate
+
 namespace Advice_Slip_MiddleMan_API.Controllers
 {
     [ApiController]
@@ -19,25 +21,32 @@ namespace Advice_Slip_MiddleMan_API.Controllers
             _logger = logger;
         }
 
+        const string SerializationExceptionMessage = "There was a problem getting data from a provider, please try again later.";
+
         // GET: api
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation("getting json from foreign API (no args)");
             string response;
             response = APIClient.GetAdviceSlip();
             ISerializeable serializeable;
             try
             {
+                _logger.LogDebug("attepting deserialization as AdviceSlip");
                 serializeable = JsonConvert.DeserializeObject<AdviceSlip>(response);
                 if ((serializeable as AdviceSlip).slip == null)
                 {
+                    _logger.LogWarning("Advice slip seems invalid, attepting deserialization as Message");
                     //Deserialize to Message if AdviceSlip is invalid
                     serializeable = JsonConvert.DeserializeObject<Message>(response);
                 }
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException e)
             {
-                throw new JsonSerializationException($"Unable to deserialize {response}");
+                _logger.LogError($"{e} \n Unable to deserialize {response}");
+                serializeable = new Message { message = new MessageBody {
+                    type = "Internal Error", text = SerializationExceptionMessage } };
             }
             
             //LEGACY
@@ -53,22 +62,33 @@ namespace Advice_Slip_MiddleMan_API.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
+            _logger.LogInformation($"getting json from foreign API with ID: {id}");
             string response;
             response = APIClient.GetAdviceSlip(id);
             ISerializeable serializeable;
             try
             {
+                _logger.LogDebug("attepting deserialization as AdviceSlip");
                 serializeable = JsonConvert.DeserializeObject<AdviceSlip>(response);
                 if ((serializeable as AdviceSlip).slip == null)
                 {
+                    _logger.LogWarning("Advice slip seems invalid, attepting deserialization as Message");
                     serializeable = JsonConvert.DeserializeObject<Message>(response);
                 }
                 
                 
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException e)
             {
-                throw new JsonSerializationException($"Unable to deserialize {response}"); 
+                _logger.LogError($"{e} \n Unable to deserialize {response}");
+                serializeable = new Message
+                {
+                    message = new MessageBody
+                    {
+                        type = "Internal Error",
+                        text = SerializationExceptionMessage
+                    }
+                };
             }
                  
             JsonResult result = new JsonResult(serializeable);
@@ -80,20 +100,31 @@ namespace Advice_Slip_MiddleMan_API.Controllers
         [HttpGet("search/{searchQuery}")]
         public  IActionResult Get(string searchQuery)
         {
+            _logger.LogInformation($"getting json from foreign API with query: {searchQuery}");
             string response;
             response = APIClient.GetAdviceSlip(searchQuery);
             ISerializeable serializeable;
             try
             {
+                _logger.LogDebug("attepting deserialization as Search");
                 serializeable = JsonConvert.DeserializeObject<Search>(response);
                 if ((serializeable as Search).total_results == null)
                 {
+                    _logger.LogWarning("Search result seems invalid, attepting deserialization as Message");
                     serializeable = JsonConvert.DeserializeObject<Message>(response);
                 }
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException e)
             {
-                throw new JsonSerializationException($"Unable to deserialize {response}");
+                _logger.LogError($"{e} \n Unable to deserialize {response}");
+                serializeable = new Message
+                {
+                    message = new MessageBody
+                    {
+                        type = "Internal Error",
+                        text = SerializationExceptionMessage
+                    }
+                };
             }
             
             JsonResult result = new JsonResult(serializeable);
