@@ -15,14 +15,6 @@ namespace Advice_Slip_MiddleMan_API
     {
         private const string AS_API_ADDRESS = "https://api.adviceslip.com/advice";
 
-        public static HttpClient httpClient{ get; set; }
-        public static void CreateHttpClient()
-        {            
-            httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
         public static string GetAdviceSlip()
         {
             string connectionString = AS_API_ADDRESS;
@@ -79,43 +71,6 @@ namespace Advice_Slip_MiddleMan_API
             }
             
             return rawJSON;
-        }
-
-        
-
-
-        /* LEGACY
-         * private static string unpackJSON(string rawJSON)
-        {
-             *ADVICE SLIP JSON API returns JSONS
-             *encapsulated in a {rootobject} that
-             *is not comfortable for JSON.NET to handle
-             *this unpacks these JSONS by keeping only
-             *the innermost brakets.
-             *
-            int start = rawJSON.LastIndexOf("{");
-            int length = rawJSON.IndexOf("}") - start;
-            return rawJSON.Substring(start, length);
-        }
-        */
-        /*
-         * LEGACY
-        public static async Task<string> PullAdviceStripFromForeignAPI(string APIAddress)
-        {
-            using (HttpResponseMessage responseMessage = await httpClient.GetAsync(APIAddress))
-            {
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    string reply = await responseMessage.Content.ReadAsStringAsync();
-                    return reply;
-                }
-                else
-                {
-                    throw new Exception("Advice Slip Request Failed");
-
-                }
-            }
-        }
-        */
+        }        
     }
 }
