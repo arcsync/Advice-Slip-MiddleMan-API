@@ -49,10 +49,6 @@ namespace Advice_Slip_MiddleMan_API.Controllers
                     type = "Internal Error", text = SerializationExceptionMessage } };
             }
             
-            //LEGACY
-            //string serialized = JsonConvert.SerializeObject(serializeable);
-            //return Ok(serialized);
-            //Depracated because JsonResult gives a more elegant output
             JsonResult result = new JsonResult(serializeable);
             result = populateResultFields(result);
             return Ok(result);

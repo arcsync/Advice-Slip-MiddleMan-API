@@ -65,7 +65,7 @@ namespace Advice_Slip_MiddleMan_API
              * this is meant to be a quick hotfix for that
              * (eg. https://api.adviceslip.com/advice/1).
              */
-            if (!rawJSON.EndsWith("}}"))
+            if (rawJSON.EndsWith("}}") == false)
             {
                 rawJSON = rawJSON + "}";
             }
